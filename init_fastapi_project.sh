@@ -179,7 +179,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from app.api.v1.router import api_router
+from app.api.router import api_router
 from app.core.config import get_config
 from app.core.exception_handlers import register_exception_handlers
 from app.core.lifespan import lifespan
@@ -245,7 +245,7 @@ from fastapi import APIRouter
 
 from app.api.v1.endpoints.health import router as health_router
 
-api_router = APIRouter(prefix="/api/v1")
+api_router = APIRouter(prefix="/v1")
 api_router.include_router(health_router)
 EOF
 )"
@@ -253,10 +253,10 @@ EOF
 write_file "$APP_DIR/api/router.py" "$(cat <<EOF
 from fastapi import APIRouter
 
-from app.api.v1.endpoints.health import router as health_router
+from app.api.v1.router import api_router as api_v1_router
 
-api_router = APIRouter()
-api_router.include_router(health_router, prefix="/api/v1")
+api_router = APIRouter(prefix="/api")
+api_router.include_router(api_v1_router)
 EOF
 )"
 
