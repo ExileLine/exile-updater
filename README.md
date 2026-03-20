@@ -4,12 +4,22 @@
 
 ## 用法
 
+- 安装uv
+
+    ```bash
+    pip install uv
+    ```
 - 构建项目
 
     ```bash
     chmod +x init_fastapi_project.sh
     ./init_fastapi_project.sh --name exile_updater --target /tmp/demo
     ```
+
+- 安装依赖
+    ```bash
+    uv sync
+    ```    
 
 - 配置(如未准备db相关配置可注释代码如下，方可正常启动);`FAST_API_ENV`默认为`development`，按需切换环境配置，查阅`/app/core/config.py`
 
@@ -42,6 +52,8 @@
 - 启动
     ```bash
     uv run local_run.py
+    
+    # http://localhost:7769/docs#/
     ```
 
 ## 参数
