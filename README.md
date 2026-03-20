@@ -4,10 +4,45 @@
 
 ## 用法
 
-```bash
-chmod +x init_fastapi_project.sh
-./init_fastapi_project.sh --name exile_updater --target /tmp/demo
-```
+- 构建项目
+
+    ```bash
+    chmod +x init_fastapi_project.sh
+    ./init_fastapi_project.sh --name exile_updater --target /tmp/demo
+    ```
+
+- 配置(如未准备db相关配置可注释代码如下，方可正常启动);`FAST_API_ENV`默认为`development`，按需切换环境配置，查阅`/app/core/config.py`
+
+    ```python
+    # /app/core/lifespan.py
+    ...
+    async def startup_event() -> None:
+        _log_startup_info()
+        logger.info(f">>> Config初始化: {project_config.ENV}")
+    
+        # try:
+        #     await _init_db()
+        #     await _init_redis()
+        #     # await _init_scheduler()
+        # except Exception:
+        #     logger.exception("应用启动失败，开始回收资源")
+        #     await _shutdown_scheduler()
+        #     await _shutdown_redis()
+        #     await _shutdown_db()
+        #     raise
+    
+    
+    async def shutdown_event() -> None:
+        logger.info(">>> shutdown")
+        # await _shutdown_scheduler()
+        # await _shutdown_redis()
+        # await _shutdown_db()
+    ...
+    ```
+- 启动
+    ```bash
+    uv run local_run.py
+    ```
 
 ## 参数
 
