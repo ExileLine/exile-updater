@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2026-03-19 17:55:21
+# @Time    : 2026-03-25 15:20:33
 # @Author  : yangyuexiong
 # @File    : main.py
 
@@ -30,10 +30,11 @@ def create_app():
         summary=project_config.DOCS_SUMMARY,
         version=project_config.DOCS_VERSION,
         openapi_url=project_config.DOCS_OPENAPI_URL,
-        lifespan=lifespan,
+        lifespan=lifespan,  # 事件注册(应用启动前与关闭后执行的事件处理器)
         **kw
     )
 
+    # 跨域: 如果则不能设置为，必须明确指定允许的域名。
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
@@ -51,9 +52,13 @@ def create_app():
         mask_sensitive_headers=project_config.MASK_SENSITIVE_HEADERS,
     )
 
+    # 异常处理器注册
     register_exception_handlers(app, debug)
+
+    # 路由注册
     app.include_router(api_router)
 
+    # 静态资源(生产环境通过配置获取路径)
     static_dir = Path(__file__).resolve().parent / "static"
     app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 

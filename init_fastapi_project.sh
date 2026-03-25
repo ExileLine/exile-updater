@@ -204,10 +204,11 @@ def create_app():
         summary=project_config.DOCS_SUMMARY,
         version=project_config.DOCS_VERSION,
         openapi_url=project_config.DOCS_OPENAPI_URL,
-        lifespan=lifespan,
+        lifespan=lifespan,  # 事件注册(应用启动前与关闭后执行的事件处理器)
         **kw
     )
 
+    # 跨域: 如果`allow_credentials=True`则`allow_origins`不能设置为`["*"]`，必须明确指定允许的域名。
     app.add_middleware(
         CORSMiddleware,
         allow_origins=["*"],
@@ -225,9 +226,13 @@ def create_app():
         mask_sensitive_headers=project_config.MASK_SENSITIVE_HEADERS,
     )
 
+    # 异常处理器注册
     register_exception_handlers(app, debug)
+
+    # 路由注册
     app.include_router(api_router)
 
+    # 静态资源(生产环境通过配置获取路径)
     static_dir = Path(__file__).resolve().parent / "static"
     app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
@@ -1858,7 +1863,7 @@ def shanghai_datetime(value: Optional[datetime], *, naive: bool = False) -> Opti
 class CustomBaseModel(Base):
     __abstract__ = True
     _json_string_fields: set[str] = set()
-    __table_prefix__ = "ssp_"
+    __table_prefix__ = ""  # 表名称前缀
     __table_name__: str | None = None
     __enable_auto_id__ = True
     __enable_audit_columns__ = True
@@ -1866,7 +1871,7 @@ class CustomBaseModel(Base):
     @declared_attr.directive
     def __tablename__(cls) -> str:
         suffix = cls.__dict__.get("__table_name__") or camel_to_snake(cls.__name__)
-        prefix = getattr(cls, "__table_prefix__", "ssp_")
+        prefix = getattr(cls, "__table_prefix__", "")  # 表名称前缀
         if suffix.startswith(prefix):
             return suffix
         return f"{prefix}{suffix}"
