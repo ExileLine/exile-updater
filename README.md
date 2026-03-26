@@ -13,7 +13,7 @@
 
     ```bash
     chmod +x init_fastapi_project.sh
-    ./init_fastapi_project.sh --name exile_updater --target /tmp/demo
+    ./init_fastapi_project.sh --name exile_updater --author yangyuexiong --target /tmp/demo
     ```
 
 - 安装依赖
@@ -59,6 +59,7 @@
 ## 参数
 
 - `-n, --name`：项目包名，默认 `exile_updater`
+- `-a, --author`：生成文件中的作者名，默认 `yangyuexiong`
 - `-t, --target`：输出目录，默认当前目录
 - `--force`：覆盖脚本生成的已有文件
 - `--dry-run`：仅打印将执行的初始化动作
@@ -69,7 +70,9 @@
 ```bash
 ./init_fastapi_project.sh
 ./init_fastapi_project.sh --dry-run
+./init_fastapi_project.sh --author yangyuexiong
 ./init_fastapi_project.sh --name demo_service --target /tmp/demo_service
+./init_fastapi_project.sh --name demo_service --author alice --target /tmp/demo_service
 ./init_fastapi_project.sh --force
 ```
 
