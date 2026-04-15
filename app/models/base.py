@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2026-03-27 15:38:07
+# @Time    : 2026-04-15 17:06:24
 # @Author  : yangyuexiong
 # @File    : base.py
 
@@ -45,11 +45,12 @@ def shanghai_datetime(value: Optional[datetime], *, naive: bool = False) -> Opti
         return localized_value.replace(tzinfo=None)
     return localized_value
 
+TABLE_PREFIX = ""  # 表名称前缀
 
 class CustomBaseModel(Base):
     __abstract__ = True
     _json_string_fields: set[str] = set()
-    __table_prefix__ = ""  # 表名称前缀
+    __table_prefix__ = TABLE_PREFIX
     __table_name__: str | None = None
     __enable_auto_id__ = True
     __enable_audit_columns__ = True
@@ -57,7 +58,7 @@ class CustomBaseModel(Base):
     @declared_attr.directive
     def __tablename__(cls) -> str:
         suffix = cls.__dict__.get("__table_name__") or camel_to_snake(cls.__name__)
-        prefix = getattr(cls, "__table_prefix__", "")  # 表名称前缀
+        prefix = getattr(cls, "__table_prefix__", TABLE_PREFIX)
         if suffix.startswith(prefix):
             return suffix
         return f"{prefix}{suffix}"

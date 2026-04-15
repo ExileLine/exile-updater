@@ -164,6 +164,7 @@ write_file "$APP_DIR/api/v1/__init__.py" ""
 write_file "$APP_DIR/api/v1/endpoints/__init__.py" ""
 write_file "$APP_DIR/core/__init__.py" ""
 write_file "$APP_DIR/db/__init__.py" ""
+write_file "$APP_DIR/static/__init__.py" ""
 write_file "$APP_DIR/models/__init__.py" "$(cat <<EOF
 # -*- coding: utf-8 -*-
 # @Time    : ${CURRENT_TIME}
@@ -1873,11 +1874,12 @@ def shanghai_datetime(value: Optional[datetime], *, naive: bool = False) -> Opti
         return localized_value.replace(tzinfo=None)
     return localized_value
 
+TABLE_PREFIX = ""  # 表名称前缀
 
 class CustomBaseModel(Base):
     __abstract__ = True
     _json_string_fields: set[str] = set()
-    __table_prefix__ = ""  # 表名称前缀
+    __table_prefix__ = TABLE_PREFIX
     __table_name__: str | None = None
     __enable_auto_id__ = True
     __enable_audit_columns__ = True
@@ -1885,7 +1887,7 @@ class CustomBaseModel(Base):
     @declared_attr.directive
     def __tablename__(cls) -> str:
         suffix = cls.__dict__.get("__table_name__") or camel_to_snake(cls.__name__)
-        prefix = getattr(cls, "__table_prefix__", "")  # 表名称前缀
+        prefix = getattr(cls, "__table_prefix__", TABLE_PREFIX)
         if suffix.startswith(prefix):
             return suffix
         return f"{prefix}{suffix}"
@@ -2195,12 +2197,13 @@ DOCS_SUMMARY="API文档总结"
 DOCS_VERSION="API文档版本"
 DOCS_OPENAPI_URL="API文档版本.json地址"
 
-DB_BACKEND=mysql
 SECRET_KEY=please-change-me
 DEBUG=True
 RUN_HOST=0.0.0.0
 RUN_PORT=7777
 SENSITIVE_HEADERS=authorization,cookie,set-cookie,x-api-key
+
+DB_BACKEND=mysql
 
 MYSQL_HOSTNAME=127.0.0.1
 MYSQL_USERNAME=root
@@ -2234,6 +2237,8 @@ RUN_HOST=0.0.0.0
 RUN_PORT=7777
 SENSITIVE_HEADERS=authorization,cookie,set-cookie,x-api-key
 
+DB_BACKEND=mysql
+
 MYSQL_HOSTNAME=127.0.0.1
 MYSQL_USERNAME=root
 MYSQL_PASSWORD=12345678
@@ -2261,6 +2266,8 @@ DEBUG=True
 RUN_HOST=0.0.0.0
 RUN_PORT=7778
 SENSITIVE_HEADERS=authorization,cookie,set-cookie,x-api-key
+
+DB_BACKEND=mysql
 
 MYSQL_HOSTNAME=127.0.0.1
 MYSQL_USERNAME=root
@@ -2290,6 +2297,8 @@ RUN_HOST=0.0.0.0
 RUN_PORT=5000
 SENSITIVE_HEADERS=authorization,cookie,set-cookie,x-api-key
 
+DB_BACKEND=mysql
+
 MYSQL_HOSTNAME=mariadb
 MYSQL_USERNAME=root
 MYSQL_PASSWORD=root12345678
@@ -2317,6 +2326,8 @@ DEBUG=False
 RUN_HOST=0.0.0.0
 RUN_PORT=5001
 SENSITIVE_HEADERS=authorization,cookie,set-cookie,x-api-key
+
+DB_BACKEND=mysql
 
 MYSQL_HOSTNAME=mariadb
 MYSQL_USERNAME=root
